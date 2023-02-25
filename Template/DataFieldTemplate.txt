@@ -1,0 +1,1 @@
+        [JsonRequired] public #TYPE# #NAME#;

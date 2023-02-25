@@ -1,0 +1,40 @@
+#FILENAME=Table#
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Newtonsoft.Json.Linq;
+
+namespace Feif
+{
+    public static class Table
+    {
+#PROPERTIES#
+        public static void Load(byte[] data)
+        {
+            if (data == null || data.Length <= 0) return;
+
+            var json = JObject.Parse(Encoding.UTF8.GetString(data));
+            var type = Type.GetType(json["Type"].ToString());
+
+            var propertieInfo = typeof(Table).GetProperties().First(item => item.PropertyType == typeof(List<>).MakeGenericType(type));
+            propertieInfo.SetValue(null, Activator.CreateInstance(propertieInfo.PropertyType));
+            var list = propertieInfo.GetValue(null) as IList;
+
+            foreach (var tField in type.GetFields())
+            {
+                var values = json["Fields"][tField.Name]["Values"].ToObject(typeof(List<>).MakeGenericType(tField.FieldType)) as IList;
+                for (int i = 0; i < values.Count; i++)
+                {
+                    if (list.Count <= i)
+                    {
+                        var instance = Activator.CreateInstance(type);
+                        list.Add(instance);
+                    }
+                    type.GetField(tField.Name).SetValue(list[i], values[i]);
+                }
+            }
+        }
+    }
+}
