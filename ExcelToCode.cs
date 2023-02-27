@@ -100,9 +100,10 @@ namespace Feif
                     {
                         if (File.Exists(Path.Combine(cachePath, $"C{fileHash}")) && File.Exists(Path.Combine(cachePath, $"D{fileHash}")))
                         {
-                            var fileName = fileCache[fileHash];
+                            var fileName = Utils.GetClass(fileCache[fileHash]);
                             File.Copy(Path.Combine(cachePath, $"C{fileHash}"), Path.Combine(codePath, fileName + ".cs"), true);
                             File.Copy(Path.Combine(cachePath, $"D{fileHash}"), Path.Combine(dataPath, fileName + suffix), true);
+                            tablesFields.AppendLine(tableFieldTemplate.Replace(Setting.Default.ReplaceType, fileCache[fileHash]).Replace(Setting.Default.ReplaceName, fileName));
                             continue;
                         }
                     }
@@ -123,7 +124,7 @@ namespace Feif
                         tasks.Add(File.WriteAllTextAsync(Path.Combine(cachePath, $"C{fileHash}"), script.Replace(Setting.Default.ReplaceProperties, builder.ToString().TrimEnd())));
                         tasks.Add(File.WriteAllBytesAsync(Path.Combine(cachePath, $"D{fileHash}"), Encoding.UTF8.GetBytes(data)));
                     }
-                    fileCache[fileHash] = Utils.GetClass(table.Type);
+                    fileCache[fileHash] = table.Type;
 
                     tablesFields.AppendLine(tableFieldTemplate.Replace(Setting.Default.ReplaceType, table.Type).Replace(Setting.Default.ReplaceName, Utils.GetClass(table.Type)));
                 }
