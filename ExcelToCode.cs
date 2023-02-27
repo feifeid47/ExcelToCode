@@ -261,7 +261,7 @@ namespace Feif
 
                 if (!type.IsGenericType)
                 {
-                    result = Convert.ChangeType(cellValue, type);
+                    result = ChangeType(cellValue, type);
                     valueCache[(fieldType, cellValue)] = result;
                     return true;
                 }
@@ -271,7 +271,7 @@ namespace Feif
                     var genericType = type.GetGenericArguments()[0];
                     if (genericType != typeof(string))
                     {
-                        result = cellValue.Split('|').Select(item => Convert.ChangeType(item, genericType)).ToList();
+                        result = cellValue.Split('|').Select(item => ChangeType(item, genericType)).ToList();
                         valueCache[(fieldType, cellValue)] = result;
                         return true;
                     }
@@ -286,19 +286,19 @@ namespace Feif
 
                     if (genericTypes[0] != typeof(string) && genericTypes[1] != typeof(string))
                     {
-                        result = cellValue.Split('|').ToDictionary(item => Convert.ChangeType(item.Split(':')[0], genericTypes[0]), item => Convert.ChangeType(item.Split(':')[1], genericTypes[1]));
+                        result = cellValue.Split('|').ToDictionary(item => ChangeType(item.Split(':')[0], genericTypes[0]), item => ChangeType(item.Split(':')[1], genericTypes[1]));
                         valueCache[(fieldType, cellValue)] = result;
                         return true;
                     }
                     if (genericTypes[0] == typeof(string) && genericTypes[1] != typeof(string))
                     {
-                        result = Utils.GetKeyValues(cellValue).ToDictionary(item => Utils.GetStringString(item.Key), item => Convert.ChangeType(item.Value, genericTypes[1]));
+                        result = Utils.GetKeyValues(cellValue).ToDictionary(item => Utils.GetStringString(item.Key), item => ChangeType(item.Value, genericTypes[1]));
                         valueCache[(fieldType, cellValue)] = result;
                         return true;
                     }
                     if (genericTypes[0] != typeof(string) && genericTypes[1] == typeof(string))
                     {
-                        result = Utils.GetKeyValues(cellValue).ToDictionary(item => Convert.ChangeType(item.Key, genericTypes[0]), item => Utils.GetStringString(item.Value));
+                        result = Utils.GetKeyValues(cellValue).ToDictionary(item => ChangeType(item.Key, genericTypes[0]), item => Utils.GetStringString(item.Value));
                         valueCache[(fieldType, cellValue)] = result;
                         return true;
                     }
@@ -315,6 +315,24 @@ namespace Feif
             {
                 return false;
             }
+        }
+
+        public static object ChangeType(string source, Type type)
+        {
+            source = source.Trim();
+            if (source.ToString().StartsWith("0X", true, System.Globalization.CultureInfo.CurrentCulture))
+            {
+                if (type == typeof(byte)) return Convert.ToByte(source, 16);
+                if (type == typeof(short)) return Convert.ToInt16(source, 16);
+                if (type == typeof(int)) return Convert.ToInt32(source, 16);
+                if (type == typeof(long)) return Convert.ToInt64(source, 16);
+
+                if (type == typeof(sbyte)) return Convert.ToSByte(source, 16);
+                if (type == typeof(ushort)) return Convert.ToUInt16(source, 16);
+                if (type == typeof(uint)) return Convert.ToUInt32(source, 16);
+                if (type == typeof(ulong)) return Convert.ToUInt64(source, 16);
+            }
+            return Convert.ChangeType(source, type);
         }
     }
 }

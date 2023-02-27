@@ -7,6 +7,7 @@
 (5) 定位到单元格的错误提醒，更快的找出非法的输入
 (6) 提供模板文件，可自定义输出的代码文件
 (7) 支持文件缓存，提升导出速度
+(8) 支持16进制输入
 ```
 # 如何使用
 命令行
@@ -75,12 +76,14 @@ foreach (var item in userInfos)
 (6) 数组类型的分隔符为|。
 (7) 字典类型的分隔符为:和|，:用来分隔key和value，|用来分隔不同的key-value
 (8) 单元格不能为空，空字符串用""表示。
+(9) byte,short,int,long,sbyte,ushort,uint,ulong支持16进制输入
 ```
-以下是符合要求的填写示例
+以下是符合要求的填写示例，可参考源码文件中的Example  
 ![](README/4.png)  
 ![](README/5.png)  
 ![](README/6.png)  
 ![](README/7.png)  
+![](README/12.png)  
 # 命名空间
 (1) 支持在Excel中填写命名空间，导出的代码文件会包含填写的命名空间   
 (2) 可在ExcelToCode程序目中找到`setting.json`修改`DefaultNamespace`即可更改默认的命名空间  
