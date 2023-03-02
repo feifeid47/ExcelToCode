@@ -240,6 +240,16 @@ namespace Feif
                 typeCache[define] = result;
                 return true;
             }
+            if (define.Contains("HashSet"))
+            {
+                var genericType = define.Replace("HashSet", string.Empty).Replace("<", string.Empty).Replace(">", string.Empty);
+
+                if (!supportDefine.Contains(genericType)) return false;
+
+                result = typeof(HashSet<>).MakeGenericType(defineTypeDic[genericType]).ToString();
+                typeCache[define] = result;
+                return true;
+            }
 
             if (defineTypeDic.ContainsKey(define))
             {
@@ -276,6 +286,20 @@ namespace Feif
                         return true;
                     }
                     result = Utils.GetStringList(cellValue);
+                    valueCache[(fieldType, cellValue)] = result;
+                    return true;
+                }
+
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(HashSet<>))
+                {
+                    var genericType = type.GetGenericArguments()[0];
+                    if (genericType != typeof(string))
+                    {
+                        result = cellValue.Split('|').Select(item => ChangeType(item, genericType)).ToHashSet();
+                        valueCache[(fieldType, cellValue)] = result;
+                        return true;
+                    }
+                    result = Utils.GetStringList(cellValue).ToHashSet();
                     valueCache[(fieldType, cellValue)] = result;
                     return true;
                 }

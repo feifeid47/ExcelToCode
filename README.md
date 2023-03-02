@@ -13,10 +13,11 @@
 命令行
 ```
 ExcelToCode.exe
--excel_path     Excel文件所在目录[必填]
+-excel_path     Excel文件根目录[必填]
 -code_path      代码文件导出目录[必填]
 -data_path      数据文件导出目录[必填]
--template_path  模板文件路径[选填]
+-cache_path     缓存文件存放目录[选填]
+-template_path  模板文件目录[选填]
 -data_suffix    数据文件后缀[选填]
 ```
 
@@ -107,8 +108,8 @@ foreach (var item in userInfos)
 ```
 
 # 支持的数据类型
-11 + 11 + 11 * 11 = 143  
-11个基础类型 + 11个基础类型对应的数组类型 + 11个基础类型相互组合的字典类型 = 143  
+11 + 11 + 11 + 11 * 11 = 154  
+11个基础类型 + 11个基础类型对应的数组类型 + 11个基础类型对应的集合类型 + 11个基础类型相互组合的字典类型 = 154  
 其他类型不支持，如：自定义类型、`List<List<int>>`、`Dictionary<int,List<float>>`等
 ```
  int 
@@ -134,6 +135,18 @@ foreach (var item in userInfos)
  List<ulong> 
  List<sbyte> 
  List<string> 
+
+ HashSet<int> 
+ HashSet<float> 
+ HashSet<double> 
+ HashSet<long> 
+ HashSet<byte> 
+ HashSet<bool> 
+ HashSet<uint> 
+ HashSet<ushort> 
+ HashSet<ulong> 
+ HashSet<sbyte> 
+ HashSet<string> 
 
  Dictionary<int,int> 
  Dictionary<int,float> 
